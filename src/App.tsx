@@ -99,16 +99,22 @@ function AuthPage() {
   const [role, setRole] = useState<Role>(roleFromUrl ?? 'user');
   const [form, setForm] = useState({ email: '', password: '', fullName: '', orgName: '', orgDescription: '' });
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     setBusy(true);
     setError('');
+    setNotice('');
     try {
-      if (mode === 'login') await signIn(form.email, form.password);
-      else await signUp({ ...form, role });
-      navigate('/app');
+      if (mode === 'login') {
+        await signIn(form.email, form.password);
+        navigate('/app');
+      } else {
+        await signUp({ ...form, role });
+        setNotice('Check your email to confirm your account, then come back and log in.');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
     } finally {
@@ -141,7 +147,10 @@ function AuthPage() {
           )}
         </>
       )}
-      <AnimatePresence>{error && <motion.p initial={{ x: -8, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ opacity: 0 }} className="rounded-lg border border-ember/30 bg-ember/10 p-3 text-sm text-amber">{error}</motion.p>}</AnimatePresence>
+      <AnimatePresence>
+        {notice && <motion.p initial={{ y: -6, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ opacity: 0 }} className="rounded-lg border border-amber/30 bg-amber/10 p-3 text-sm text-amber">{notice}</motion.p>}
+        {error && <motion.p initial={{ x: -8, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ opacity: 0 }} className="rounded-lg border border-ember/30 bg-ember/10 p-3 text-sm text-amber">{error}</motion.p>}
+      </AnimatePresence>
       <Button disabled={busy}>{busy ? 'Working...' : mode === 'login' ? 'Login' : 'Create account'}<ChevronRight size={18} /></Button>
     </motion.form>
   );
