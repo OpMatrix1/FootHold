@@ -100,6 +100,7 @@ function AuthPage() {
   const [form, setForm] = useState({ email: '', password: '', fullName: '', orgName: '', orgDescription: '' });
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
   const [busy, setBusy] = useState(false);
 
   async function submit(event: React.FormEvent) {
@@ -113,13 +114,31 @@ function AuthPage() {
         navigate('/app');
       } else {
         await signUp({ ...form, role });
-        setNotice('Check your email to confirm your account, then come back and log in.');
+        await signOut();
+        setSignupEmail(form.email);
+        setNotice('');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
     } finally {
       setBusy(false);
     }
+  }
+
+  if (signupEmail) {
+    return (
+      <motion.section {...page} className="mx-auto grid max-w-xl gap-5 rounded-lg border border-amber/25 bg-amber/10 p-6 text-center shadow-glow">
+        <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-amber/20 text-amber">
+          <Check size={28} />
+        </div>
+        <div>
+          <p className="text-sm font-bold uppercase tracking-[0.18em] text-amber">Confirm your email</p>
+          <h1 className="mt-2 font-display text-4xl font-bold">Check your inbox</h1>
+        </div>
+        <p className="text-white/70">We sent a confirmation link to <span className="font-bold text-white">{signupEmail}</span>. Open it from your email app, then come back here and log in.</p>
+        <Button type="button" onClick={() => { setMode('login'); setSignupEmail(''); }}>Back to login</Button>
+      </motion.section>
+    );
   }
 
   return (
