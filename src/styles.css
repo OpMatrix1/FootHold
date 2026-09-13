@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #f5f1ea;
+  background: #14161f;
+  font-family: Inter, Public Sans, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 16% 10%, rgba(255, 200, 92, 0.12), transparent 28rem),
+    linear-gradient(135deg, #14161f 0%, #1e2130 100%);
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+.action-gradient {
+  background: linear-gradient(135deg, #ff7a45 0%, #ffc85c 100%);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px);
+}
