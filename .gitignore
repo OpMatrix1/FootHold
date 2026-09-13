@@ -11,3 +11,4 @@ tailwind.config.d.ts
 src/**/*.js
 src/**/*.d.ts
 !src/vite-env.d.ts
+.deploy-pages-*/

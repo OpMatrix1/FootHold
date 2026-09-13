@@ -3,6 +3,7 @@ import { BriefcaseBusiness, Building2, Check, ChevronRight, FileUp, LogOut, Sear
 import { useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { signIn, signOut, signUp } from './lib/auth';
+import { mockCategories, mockListings } from './lib/mockData';
 import { supabase, type Application, type Category, type Listing, type Profile, type Role } from './lib/supabase';
 
 const page = {
@@ -210,7 +211,10 @@ function Browse() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('all');
-  useEffect(() => { supabase.from('listings').select('*, companies(*), categories(*)').eq('status', 'open').order('created_at', { ascending: false }).then(({ data }) => setListings(data ?? [])); supabase.from('categories').select('*').then(({ data }) => setCategories(data ?? [])); }, []);
+  useEffect(() => {
+    supabase.from('listings').select('*, companies(*), categories(*)').eq('status', 'open').order('created_at', { ascending: false }).then(({ data }) => setListings(data?.length ? data : mockListings));
+    supabase.from('categories').select('*').then(({ data }) => setCategories(data?.length ? data : mockCategories));
+  }, []);
   const filtered = useMemo(() => listings.filter((l) => (category === 'all' || l.category_id === category) && `${l.title} ${l.location} ${l.description}`.toLowerCase().includes(query.toLowerCase())), [listings, query, category]);
   return (
     <motion.section {...page}>
@@ -230,7 +234,10 @@ function ListingDetail({ profile }: { profile: Profile }) {
   const [cover, setCover] = useState('');
   const [cv, setCv] = useState<File | null>(null);
   const [success, setSuccess] = useState(false);
-  useEffect(() => { supabase.from('listings').select('*, companies(*), categories(*)').eq('id', id).single().then(({ data }) => setListing(data)); }, [id]);
+  useEffect(() => {
+    const fallback = mockListings.find((item) => item.id === id) ?? null;
+    supabase.from('listings').select('*, companies(*), categories(*)').eq('id', id).single().then(({ data }) => setListing(data ?? fallback));
+  }, [id]);
   async function apply() {
     let cvUrl = null;
     if (cv) {
