@@ -9,11 +9,17 @@ type SignupInput = {
   orgDescription?: string;
 };
 
+function getEmailRedirectTo() {
+  if (typeof window === 'undefined') return undefined;
+  return new URL(`${import.meta.env.BASE_URL}#/app`, window.location.origin).toString();
+}
+
 export async function signUp(input: SignupInput) {
   const { data, error } = await supabase.auth.signUp({
     email: input.email,
     password: input.password,
     options: {
+      emailRedirectTo: getEmailRedirectTo(),
       data: {
         full_name: input.fullName,
         role: input.role,
