@@ -2,6 +2,7 @@
   "name": "foothold",
   "private": true,
   "version": "0.1.0",
+  "description": "A React and Supabase portfolio project for showcasing FootHold, a TypeScript opportunity platform with listings, applications, CV uploads, and interview workflow support.",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
